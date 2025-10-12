@@ -1,0 +1,4 @@
+{
+  "id": "task188",
+  "description": "Write a function that fetches JSON from a URL and returns it as a dict."
+}

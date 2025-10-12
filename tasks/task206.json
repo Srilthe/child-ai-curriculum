@@ -1,0 +1,4 @@
+{
+  "id": "task206",
+  "description": "Write a function that trains a logistic regression classifier and returns accuracy."
+}
