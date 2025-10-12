@@ -1,0 +1,17 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+child_env/
+venv/
+.env/
+
+# Logs and artifacts
+artifacts/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
