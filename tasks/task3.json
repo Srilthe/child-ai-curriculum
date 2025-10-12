@@ -1,0 +1,1 @@
+{ "id": "task3", "description": "Write a function plot_series(data, outpath) that saves a line plot of the list 'data' to the file 'outpath'.", "function": "plot_series", "tests": [ {"input": {"data": [1,2,3,4,5], "outpath": "plot.png"}, "expected": "plot.png"} ] }

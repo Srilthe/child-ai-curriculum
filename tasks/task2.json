@@ -1,0 +1,1 @@
+{ "id": "task2", "description": "Write a function load_and_sum(path) that loads a CSV with a column 'value' and returns the sum of that column.", "function": "load_and_sum", "tests": [ {"input": {"path": "sample.csv"}, "expected": 15} ] }

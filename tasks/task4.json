@@ -1,0 +1,1 @@
+{ "id": "task4", "description": "Write a function train_and_score(X, y) that fits a linear regression model and returns the R^2 score on the same data.", "function": "train_and_score", "tests": [ {"input": {"X": [[1],[2],[3]], "y": [2,4,6]}, "expected": 1.0} ] }

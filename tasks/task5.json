@@ -1,0 +1,1 @@
+{ "id": "task5", "description": "Write a function count_lines(path) that returns the number of lines in a text file.", "function": "count_lines", "tests": [ {"input": {"path": "sample.txt"}, "expected": 3} ] }
