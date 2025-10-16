@@ -1,6 +1,0 @@
-{
-  "id": "task185",
-  "description": "Convert Celsius to Fahrenheit",
-  "inputs": { "celsius": 25 },
-  "expected_outputs": { "fahrenheit": 77 }
-}

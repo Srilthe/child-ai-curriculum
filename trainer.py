@@ -3,6 +3,8 @@ import os, sys, time, json, traceback, uuid, importlib.util, multiprocessing, ra
 from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import matplotlib
+matplotlib.use("Agg")
 
 ARTIFACT_DIR = os.path.expanduser("~/child_env_runner/artifacts")
 TASK_DIR = os.path.expanduser("~/child_env_runner/tasks")

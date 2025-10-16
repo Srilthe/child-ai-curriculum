@@ -1,9 +1,0 @@
-{
-  "id": "task216",
-  "type": "cpu",
-  "description": "Write a function count_words(path) that returns the number of words in a text file.",
-  "requirements": [],
-  "metrics": ["word_count"],
-  "success_criteria": "Returns correct count for a sample file"
-}
-

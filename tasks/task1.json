@@ -1,1 +1,0 @@
-{ "id": "task1", "description": "Write a function mean(lst) that returns the mean of a list of numbers.", "function": "mean", "tests": [ {"input": [1,2,3], "expected": 2.0}, {"input": [10,20], "expected": 15.0}, {"input": [5], "expected": 5.0} ] }

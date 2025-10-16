@@ -1,6 +1,0 @@
-{
-  "id": "task186",
-  "description": "Sum a list of integers",
-  "inputs": { "numbers": [2, 4, 6, 8] },
-  "expected_outputs": { "sum": 20 }
-}

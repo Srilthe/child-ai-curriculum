@@ -1,6 +1,0 @@
-{
-  "id": "task188",
-  "description": "Find the maximum value in a list",
-  "inputs": { "numbers": [3, 9, 1, 7] },
-  "expected_outputs": { "max": 9 }
-}

@@ -1,6 +1,0 @@
-{
-  "id": "task187",
-  "description": "Check if a string is a palindrome",
-  "inputs": { "text": "level" },
-  "expected_outputs": { "is_palindrome": true }
-}
