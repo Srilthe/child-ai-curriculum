@@ -1,0 +1,7 @@
+{
+  "id": "task_cpu_060",
+  "description": "Compute the 16th Fibonacci number",
+  "function": "fib",
+  "inputs": { "n": 16 },
+  "expected_outputs": 987
+}

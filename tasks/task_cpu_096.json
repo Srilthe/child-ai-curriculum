@@ -1,0 +1,7 @@
+{
+  "id": "task_cpu_096",
+  "description": "Compute the 52th Fibonacci number",
+  "function": "fib",
+  "inputs": { "n": 52 },
+  "expected_outputs": 32951280099
+}

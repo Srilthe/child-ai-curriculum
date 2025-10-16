@@ -1,0 +1,7 @@
+{
+  "id": "task_cpu_084",
+  "description": "Compute the 40th Fibonacci number",
+  "function": "fib",
+  "inputs": { "n": 40 },
+  "expected_outputs": 102334155
+}

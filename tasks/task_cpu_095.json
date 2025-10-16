@@ -1,0 +1,7 @@
+{
+  "id": "task_cpu_095",
+  "description": "Compute factorial of a number",
+  "function": "factorial",
+  "inputs": { "n": 46 },
+  "expected_outputs": 1150331055211806720
+}

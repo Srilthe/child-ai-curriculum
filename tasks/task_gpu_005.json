@@ -1,8 +1,11 @@
 {
   "id": "task_gpu_005",
+  "description": "Multiply two 2x2 matrices on GPU",
+  "function": "gpu_matrix_mul",
   "type": "gpu",
-  "description": "Write a function run_inference(model, input) that times a forward pass on GPU.",
-  "requirements": ["torch", "cuda"],
-  "metrics": ["inference_time_ms"],
-  "success_criteria": "Inference completes under 100ms"
+  "inputs": {
+    "A": [[1,2],[3,4]],
+    "B": [[5,6],[7,8]]
+  },
+  "expected_outputs": [[19,22],[43,50]]
 }

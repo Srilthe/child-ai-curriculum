@@ -1,0 +1,7 @@
+{
+  "id": "task_cpu_010",
+  "description": "Compute the 12th Fibonacci number",
+  "function": "fib",
+  "inputs": { "n": 12 },
+  "expected_outputs": 144
+}

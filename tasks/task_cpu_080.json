@@ -1,0 +1,7 @@
+{
+  "id": "task_cpu_080",
+  "description": "Compute the 36th Fibonacci number",
+  "function": "fib",
+  "inputs": { "n": 36 },
+  "expected_outputs": 14930352
+}

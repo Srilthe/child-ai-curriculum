@@ -1,0 +1,11 @@
+{
+  "id": "task_gpu_080",
+  "description": "Multiply two 3x3 matrices on GPU",
+  "function": "gpu_matrix_mul",
+  "type": "gpu",
+  "inputs": {
+    "A": [[1,2,3],[4,5,6],[7,8,9]],
+    "B": [[28,29,30],[3,32,33],[6,35,36]]
+  },
+  "expected_outputs": [[0,0,0],[0,0,0],[0,0,0]]
+}

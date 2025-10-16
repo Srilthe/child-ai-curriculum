@@ -1,7 +1,11 @@
 {
   "id": "task_gpu_011",
-  "description": "Measure vector addition throughput on GPU",
-  "inputs": { "vector_length": 1000000, "dtype": "float32" },
-  "expected_outputs": { "throughput": "elements/sec", "correctness": true },
-  "tags": ["gpu", "benchmark", "vector"]
+  "description": "Multiply two 2x2 matrices on GPU",
+  "function": "gpu_matrix_mul",
+  "type": "gpu",
+  "inputs": {
+    "A": [[1,2],[3,4]],
+    "B": [[5,6],[7,8]]
+  },
+  "expected_outputs": [[19,22],[43,50]]
 }
