@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_004",
+  "type": "gpu",
+  "description": "Write a function transfer_speed(arr) that measures time to move a large tensor to GPU and back.",
+  "requirements": ["torch", "cuda"],
+  "metrics": ["transfer_time_ms"],
+  "success_criteria": "Transfer completes under 50ms"
+}

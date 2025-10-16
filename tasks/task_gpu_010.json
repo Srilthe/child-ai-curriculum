@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_010",
+  "type": "gpu",
+  "description": "Write a function gpu_info() that returns name, memory, and compute capability of current GPU.",
+  "requirements": ["torch", "cuda"],
+  "metrics": ["device_name", "memory_MB", "compute_capability"],
+  "success_criteria": "Returns all fields without error"
+}

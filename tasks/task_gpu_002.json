@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_002",
+  "type": "gpu",
+  "description": "Write a function profile_vram() that returns current and peak GPU memory usage using torch.cuda.memory_stats().",
+  "requirements": ["torch", "cuda"],
+  "metrics": ["peak_memory_MB"],
+  "success_criteria": "Returns valid memory stats without error"
+}

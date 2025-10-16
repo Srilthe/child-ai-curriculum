@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_008",
+  "type": "gpu",
+  "description": "Write a function benchmark_batch(batch_sizes) that times inference for each batch size on GPU.",
+  "requirements": ["torch", "cuda"],
+  "metrics": ["batch_latency_map"],
+  "success_criteria": "Returns latency for all batch sizes"
+}

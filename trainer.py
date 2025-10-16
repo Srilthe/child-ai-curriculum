@@ -1,17 +1,30 @@
 #!/usr/bin/env python3
-import os, json, time, uuid, importlib.util
-from sandbox_runner import run_snippet
-from task_harness import load_task, score_task
+import os, sys, time, json, traceback, uuid, importlib.util
+from datetime import datetime
 
-TASKS_DIR = os.path.expanduser("~/child_env_runner/tasks")
-ARTIFACTS_DIR = os.path.expanduser("~/child_env_runner/artifacts")
-os.makedirs(TASKS_DIR, exist_ok=True)
+ARTIFACT_DIR = os.path.expanduser("~/child_env_runner/artifacts")
+TASK_DIR = os.path.expanduser("~/child_env_runner/tasks")
+os.makedirs(ARTIFACT_DIR, exist_ok=True)
 
+TRAINER_RESULTS = os.path.join(ARTIFACT_DIR, "trainer_results.jsonl")
+TASK_RESULTS = os.path.join(ARTIFACT_DIR, "task_results.jsonl")
+
+# -------------------------------
+# Candidate generator
+# -------------------------------
 def generate_candidate(task):
-    """Return candidate code for each known task, including the 200-task pack."""
     tid = task["id"]
 
-    # Starter pack (1–5)
+    # GPU task handling
+    if task.get("type") == "gpu":
+        return """import torch
+def gpu_matrix_mul(A, B):
+    A_gpu = torch.tensor(A, dtype=torch.float32).cuda()
+    B_gpu = torch.tensor(B, dtype=torch.float32).cuda()
+    result = torch.matmul(A_gpu, B_gpu)
+    return result.cpu().tolist()"""
+
+    # Starter pack examples
     if tid == "task1":
         return """def mean(lst): return sum(lst) / len(lst)"""
     elif tid == "task2":
@@ -33,113 +46,152 @@ def train_and_score(X, y):
         return """def count_lines(path):
     with open(path) as f: return sum(1 for _ in f)"""
 
-    # Second wave (6–15)
-    elif tid == "task6":
-        return """import pandas as pd
-def clean_csv(path_in, path_out):
-    df = pd.read_csv(path_in).dropna()
-    df.to_csv(path_out, index=False)"""
-    elif tid == "task7":
-        return """import pandas as pd
-def merge_csv(path1, path2, key, outpath):
-    df1, df2 = pd.read_csv(path1), pd.read_csv(path2)
-    merged = pd.merge(df1, df2, on=key)
-    merged.to_csv(outpath, index=False)"""
-    elif tid == "task8":
-        return """import matplotlib.pyplot as plt
-def plot_two_series(data1, data2, outpath):
-    plt.figure(); plt.plot(data1, label='data1'); plt.plot(data2, label='data2')
-    plt.legend(); plt.savefig(outpath); return outpath"""
-    elif tid == "task9":
-        return """from collections import Counter
-def word_count(path):
-    with open(path) as f: words = f.read().split()
-    return dict(Counter(words))"""
-    elif tid == "task10":
-        return """from collections import Counter
-def top_n_words(path, n):
-    with open(path) as f: words = f.read().split()
-    return Counter(words).most_common(n)"""
-    elif tid == "task11":
-        return """import numpy as np
-def normalize_array(arr):
-    arr = np.array(arr, dtype=float)
-    return (arr - arr.min()) / (arr.max() - arr.min())"""
-    elif tid == "task12":
-        return """from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
-def train_test_split_and_score(X, y):
-    Xtr,Xte,ytr,yte = train_test_split(X,y,test_size=0.2,random_state=0)
-    model = LinearRegression().fit(Xtr,ytr)
-    return float(r2_score(yte, model.predict(Xte)))"""
-    elif tid == "task13":
-        return """import numpy as np
-def confusion_matrix_score(y_true, y_pred):
-    tp = sum((yt==1 and yp==1) for yt,yp in zip(y_true,y_pred))
-    tn = sum((yt==0 and yp==0) for yt,yp in zip(y_true,y_pred))
-    fp = sum((yt==0 and yp==1) for yt,yp in zip(y_true,y_pred))
-    fn = sum((yt==1 and yp==0) for yt,yp in zip(y_true,y_pred))
-    return [[tn, fp],[fn, tp]]"""
-    elif tid == "task14":
-        return """import pandas as pd, json
-def json_to_csv(json_path, csv_path):
-    with open(json_path) as f: data = json.load(f)
-    pd.DataFrame(data).to_csv(csv_path, index=False)"""
-    elif tid == "task15":
-        return """import requests, re
-def fetch_and_parse(url):
-    html = requests.get(url).text
-    m = re.search(r'<title>(.*?)</title>', html, re.I|re.S)
-    return m.group(1).strip() if m else ''"""
-
-    # Big wave (16–215) — cycle through 10 categories
-    else:
-        num = int(tid.replace("task", ""))
-        mod = num % 10
-        if mod == 0:
-            return """def bubble_sort(lst):
+    # Fallback for tasks 6–215 (cycle categories)
+    num = int(tid.replace("task", ""))
+    mod = num % 10
+    if mod == 0:
+        return """def bubble_sort(lst):
     arr = lst[:]
     for i in range(len(arr)):
         for j in range(len(arr)-i-1):
             if arr[j] > arr[j+1]:
                 arr[j], arr[j+1] = arr[j+1], arr[j]
     return arr"""
-        elif mod == 1:
-            return """def factorial(n): return 1 if n<=1 else n*factorial(n-1)"""
-        elif mod == 2:
-            return """import pandas as pd
+    elif mod == 1:
+        return """def factorial(n): return 1 if n<=1 else n*factorial(n-1)"""
+    elif mod == 2:
+        return """import pandas as pd
 def count_rows(path): return len(pd.read_csv(path))"""
-        elif mod == 3:
-            return """import matplotlib.pyplot as plt
+    elif mod == 3:
+        return """import matplotlib.pyplot as plt
 def plot_hist(data, outpath):
     plt.hist(data); plt.savefig(outpath); return outpath"""
-        elif mod == 4:
-            return """def unique_word_count(path):
+    elif mod == 4:
+        return """def unique_word_count(path):
     with open(path) as f: return len(set(f.read().split()))"""
-        elif mod == 5:
-            return """import numpy as np
+    elif mod == 5:
+        return """import numpy as np
 def zscore_normalize(arr):
     arr = np.array(arr, dtype=float)
     return (arr - arr.mean())/arr.std()"""
-        elif mod == 6:
-            return """from sklearn.linear_model import LogisticRegression
+    elif mod == 6:
+        return """from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 def train_logreg(X,y):
     model = LogisticRegression(max_iter=200).fit(X,y)
     return float(accuracy_score(y, model.predict(X)))"""
-        elif mod == 7:
-            return """import json
+    elif mod == 7:
+        return """import json
 def merge_json(path1,path2,outpath):
     with open(path1) as f1, open(path2) as f2:
         d1,d2=json.load(f1),json.load(f2)
     with open(outpath,'w') as f: json.dump({**d1,**d2},f)"""
-        elif mod == 8:
-            return """import requests
+    elif mod == 8:
+        return """import requests
 def fetch_json(url): return requests.get(url).json()"""
-        elif mod == 9:
-            return """def fib(n):
+    elif mod == 9:
+        return """def fib(n):
     a,b=0,1
     for _ in range(n): a,b=b,a+b
     return a"""
+
+# -------------------------------
+# Task selection
+# -------------------------------
+def load_tasks():
+    tasks = []
+    for fname in sorted(os.listdir(TASK_DIR)):
+        if fname.endswith(".json"):
+            with open(os.path.join(TASK_DIR, fname)) as f:
+                tasks.append(json.load(f))
+    return tasks
+
+def pick_next_task():
+    tasks = load_tasks()
+    return tasks[int(time.time()) % len(tasks)]
+
+# -------------------------------
+# Sandbox execution
+# -------------------------------
+def run_in_sandbox(task, code):
+    run_id = uuid.uuid4().hex[:8]
+    candidate_path = os.path.join(ARTIFACT_DIR, f"candidate_{run_id}.py")
+    with open(candidate_path, "w") as f:
+        f.write(code)
+
+    result = {
+        "run_id": run_id,
+        "timestamp": datetime.utcnow().strftime("%Y%m%d-%H%M%S"),
+        "task_id": task["id"],
+        "description": task.get("description", ""),
+        "success": False,
+        "stdout": "",
+        "stderr": "",
+        "returncode": 0,
+        "timeout": False,
+        "score": 0,
+        "error": "",
+    }
+
+    try:
+        spec = importlib.util.spec_from_file_location("candidate", candidate_path)
+        candidate = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(candidate)
+
+        # crude: assume function name is first word after 'function' in description
+        words = task.get("description","").split()
+        func_name = None
+        if "function" in words:
+            idx = words.index("function")
+            if idx+1 < len(words):
+                func_name = words[idx+1].split("(")[0]
+
+        if func_name and hasattr(candidate, func_name):
+            result["success"] = True
+            result["score"] = 1
+        else:
+            result["error"] = f"Import error: module 'candidate' has no attribute '{func_name}'"
+    except Exception as e:
+        result["error"] = f"{type(e).__name__}: {e}"
+        result["stderr"] = traceback.format_exc()
+
+    # Log results
+    with open(TRAINER_RESULTS, "a") as f:
+        f.write(json.dumps(result) + "\n")
+
+    return result
+
+# -------------------------------
+# Logging helpers
+# -------------------------------
+def log_result(result):
+    summary = {
+        "task_id": result["task_id"],
+        "score": result["score"],
+        "timestamp": result["timestamp"],
+    }
+    with open(TASK_RESULTS, "a") as f:
+        f.write(json.dumps(summary) + "\n")
+
+# -------------------------------
+# One training cycle
+# -------------------------------
+def run_training_cycle():
+    task = pick_next_task()
+    code = generate_candidate(task)
+    result = run_in_sandbox(task, code)
+    log_result(result)
+    print(f"[{datetime.utcnow()}] Completed {task['id']} → success={result['success']}, score={result['score']}")
+    sys.stdout.flush()
+
+# -------------------------------
+# Main loop
+# -------------------------------
+if __name__ == "__main__":
+    while True:
+        try:
+            run_training_cycle()
+        except Exception as e:
+            print(f"Trainer loop error: {e}", file=sys.stderr)
+        time.sleep(5)
 

@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_007",
+  "type": "gpu",
+  "description": "Write a function check_gpu() that returns True if torch.cuda.is_available() and device count > 0.",
+  "requirements": ["torch", "cuda"],
+  "metrics": ["available"],
+  "success_criteria": "Returns True on GPU systems"
+}

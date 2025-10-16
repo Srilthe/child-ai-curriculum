@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_003",
+  "type": "gpu",
+  "description": "Write a function compare_precision(A,B) that benchmarks FP32 vs FP16 matrix multiplication on GPU.",
+  "requirements": ["torch", "cuda"],
+  "metrics": ["fp32_time_ms", "fp16_time_ms"],
+  "success_criteria": "Both benchmarks complete and show expected speedup"
+}

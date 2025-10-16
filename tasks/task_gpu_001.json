@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_001",
+  "type": "gpu",
+  "description": "Write a function gpu_matrix_mul(A,B) that multiplies two matrices on the GPU using torch.cuda.",
+  "requirements": ["torch", "cuda"],
+  "metrics": ["latency_ms", "memory_MB"],
+  "success_criteria": "Returns correct result and completes within 100ms"
+}

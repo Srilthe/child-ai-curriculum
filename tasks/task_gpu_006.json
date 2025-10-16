@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_006",
+  "type": "gpu",
+  "description": "Write a function stress_kernels(n) that launches n CUDA kernels and returns total time.",
+  "requirements": ["torch", "cuda"],
+  "metrics": ["total_time_ms"],
+  "success_criteria": "Launches complete without error"
+}

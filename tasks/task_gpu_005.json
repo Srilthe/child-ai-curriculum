@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_005",
+  "type": "gpu",
+  "description": "Write a function run_inference(model, input) that times a forward pass on GPU.",
+  "requirements": ["torch", "cuda"],
+  "metrics": ["inference_time_ms"],
+  "success_criteria": "Inference completes under 100ms"
+}

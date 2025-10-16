@@ -1,0 +1,8 @@
+{
+  "id": "task_gpu_009",
+  "type": "gpu",
+  "description": "Write a function monitor_temp() that uses nvidia-smi to log GPU temperature during load.",
+  "requirements": ["nvidia-smi"],
+  "metrics": ["temperature_C"],
+  "success_criteria": "Returns valid temperature reading"
+}
