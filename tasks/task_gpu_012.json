@@ -1,0 +1,7 @@
+{
+  "id": "task_gpu_012",
+  "description": "Check GPU memory allocation and free",
+  "inputs": { "allocation_size_mb": 256 },
+  "expected_outputs": { "allocation_success": true, "free_after": true },
+  "tags": ["gpu", "memory", "diagnostic"]
+}

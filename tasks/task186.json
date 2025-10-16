@@ -1,4 +1,6 @@
 {
   "id": "task186",
-  "description": "Write a function that trains a logistic regression classifier and returns accuracy."
+  "description": "Sum a list of integers",
+  "inputs": { "numbers": [2, 4, 6, 8] },
+  "expected_outputs": { "sum": 20 }
 }

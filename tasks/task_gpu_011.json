@@ -1,0 +1,7 @@
+{
+  "id": "task_gpu_011",
+  "description": "Measure vector addition throughput on GPU",
+  "inputs": { "vector_length": 1000000, "dtype": "float32" },
+  "expected_outputs": { "throughput": "elements/sec", "correctness": true },
+  "tags": ["gpu", "benchmark", "vector"]
+}

@@ -1,4 +1,6 @@
 {
   "id": "task185",
-  "description": "Write a function that normalizes a NumPy array to mean 0, std 1."
+  "description": "Convert Celsius to Fahrenheit",
+  "inputs": { "celsius": 25 },
+  "expected_outputs": { "fahrenheit": 77 }
 }

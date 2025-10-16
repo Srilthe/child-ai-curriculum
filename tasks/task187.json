@@ -1,4 +1,6 @@
 {
   "id": "task187",
-  "description": "Write a function that merges two JSON files into one dictionary."
+  "description": "Check if a string is a palindrome",
+  "inputs": { "text": "level" },
+  "expected_outputs": { "is_palindrome": true }
 }

@@ -1,4 +1,6 @@
 {
   "id": "task188",
-  "description": "Write a function that fetches JSON from a URL and returns it as a dict."
+  "description": "Find the maximum value in a list",
+  "inputs": { "numbers": [3, 9, 1, 7] },
+  "expected_outputs": { "max": 9 }
 }

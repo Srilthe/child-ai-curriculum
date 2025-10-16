@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, sys, time, json, traceback, uuid, importlib.util
+import os, sys, time, json, traceback, uuid, importlib.util, multiprocessing
 from datetime import datetime
 
 ARTIFACT_DIR = os.path.expanduser("~/child_env_runner/artifacts")
@@ -96,8 +96,9 @@ def fetch_json(url): return requests.get(url).json()"""
     return a"""
 
 # -------------------------------
-# Task selection
+# Task selection (round robin)
 # -------------------------------
+_task_index = 0
 def load_tasks():
     tasks = []
     for fname in sorted(os.listdir(TASK_DIR)):
@@ -107,13 +108,34 @@ def load_tasks():
     return tasks
 
 def pick_next_task():
+    global _task_index
     tasks = load_tasks()
-    return tasks[int(time.time()) % len(tasks)]
+    if not tasks:
+        raise RuntimeError("No tasks found")
+    task = tasks[_task_index % len(tasks)]
+    _task_index += 1
+    return task
 
 # -------------------------------
-# Sandbox execution
+# Sandbox execution with timeout + cleanup
 # -------------------------------
-def run_in_sandbox(task, code):
+def _execute_candidate(candidate_path, func_name, inputs, queue):
+    try:
+        spec = importlib.util.spec_from_file_location("candidate", candidate_path)
+        candidate = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(candidate)
+
+        if not hasattr(candidate, func_name):
+            queue.put(("error", f"Function '{func_name}' not found"))
+            return
+
+        func = getattr(candidate, func_name)
+        result = func(**inputs) if isinstance(inputs, dict) else func(inputs)
+        queue.put(("ok", result))
+    except Exception as e:
+        queue.put(("error", f"{type(e).__name__}: {e}\n{traceback.format_exc()}"))
+
+def run_in_sandbox(task, code, timeout=5):
     run_id = uuid.uuid4().hex[:8]
     candidate_path = os.path.join(ARTIFACT_DIR, f"candidate_{run_id}.py")
     with open(candidate_path, "w") as f:
@@ -133,27 +155,48 @@ def run_in_sandbox(task, code):
         "error": "",
     }
 
-    try:
-        spec = importlib.util.spec_from_file_location("candidate", candidate_path)
-        candidate = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(candidate)
-
-        # crude: assume function name is first word after 'function' in description
+    # Determine function name
+    func_name = task.get("function")
+    if not func_name:
         words = task.get("description","").split()
-        func_name = None
         if "function" in words:
             idx = words.index("function")
             if idx+1 < len(words):
                 func_name = words[idx+1].split("(")[0]
 
-        if func_name and hasattr(candidate, func_name):
-            result["success"] = True
-            result["score"] = 1
-        else:
-            result["error"] = f"Import error: module 'candidate' has no attribute '{func_name}'"
-    except Exception as e:
-        result["error"] = f"{type(e).__name__}: {e}"
-        result["stderr"] = traceback.format_exc()
+    # Run in subprocess with timeout
+    queue = multiprocessing.Queue()
+    proc = multiprocessing.Process(
+        target=_execute_candidate,
+        args=(candidate_path, func_name, task.get("inputs", {}), queue)
+    )
+    proc.start()
+    proc.join(timeout)
+
+    if proc.is_alive():
+        proc.terminate()
+        result["timeout"] = True
+        result["error"] = "Execution timed out"
+    else:
+        try:
+            status, payload = queue.get_nowait()
+            if status == "ok":
+                expected = task.get("expected_outputs")
+                if expected is None or payload == expected:
+                    result["success"] = True
+                    result["score"] = 1
+                else:
+                    result["error"] = f"Output mismatch: got {payload}, expected {expected}"
+            else:
+                result["error"] = payload
+        except Exception as e:
+            result["error"] = f"No result returned: {e}"
+
+    # Cleanup candidate file
+    try:
+        os.remove(candidate_path)
+    except OSError:
+        pass
 
     # Log results
     with open(TRAINER_RESULTS, "a") as f:
@@ -169,6 +212,8 @@ def log_result(result):
         "task_id": result["task_id"],
         "score": result["score"],
         "timestamp": result["timestamp"],
+        "success": result["success"],
+        "error": result["error"][:200]  # truncate for readability
     }
     with open(TASK_RESULTS, "a") as f:
         f.write(json.dumps(summary) + "\n")
