@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_068",
-  "description": "Compute the 24th Fibonacci number",
-  "function": "fib",
-  "inputs": { "n": 24 },
-  "expected_outputs": 46368
-}

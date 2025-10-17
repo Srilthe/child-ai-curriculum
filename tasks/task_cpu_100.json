@@ -1,7 +1,7 @@
 {
   "id": "task_cpu_100",
-  "description": "Compute the 56th Fibonacci number",
-  "function": "fib",
-  "inputs": { "n": 56 },
-  "expected_outputs": 225851433717
+  "description": "Compute the sum of a list",
+  "function": "sum",
+  "inputs": { "lst": [1, 2, 3, 4, 5] },
+  "expected_outputs": 15
 }

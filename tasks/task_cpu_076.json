@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_076",
-  "description": "Compute the 32th Fibonacci number",
-  "function": "fib",
-  "inputs": { "n": 32 },
-  "expected_outputs": 2178309
-}

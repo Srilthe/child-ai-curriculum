@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_086",
-  "description": "Compute the mean of a list of numbers",
-  "function": "mean",
-  "inputs": { "lst": [32,33,34,35,36] },
-  "expected_outputs": 34
-}

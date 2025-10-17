@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_064",
-  "description": "Compute the 20th Fibonacci number",
-  "function": "fib",
-  "inputs": { "n": 20 },
-  "expected_outputs": 6765
-}

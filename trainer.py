@@ -150,40 +150,6 @@ def merge_json(path1,path2,outpath):
 def fetch_json(url): return requests.get(url).json()"""
     if mod == 9: return BUILDING_BLOCKS["fib"]
 
-def generate_candidate(task):
-    pipeline = task.get("pipeline")
-    if pipeline:
-        code_parts = []
-        for step in pipeline:
-            if step in BUILDING_BLOCKS:
-                code_parts.append(BUILDING_BLOCKS[step])
-        driver_lines = ["def run_pipeline(**kwargs):", "    _last = None"]
-        for step in pipeline:
-            if step == "load_csv":
-                driver_lines.append("    _last = load_csv(kwargs['path'])")
-            elif step == "normalize":
-                driver_lines.append("    _last = normalize(_last, kwargs['column'])")
-            elif step == "filter_rows":
-                driver_lines.append("    _last = filter_rows(_last, kwargs['column'], kwargs['threshold'])")
-            elif step == "aggregate_mean":
-                driver_lines.append("    _last = aggregate_mean(_last, kwargs['column'])")
-            elif step == "plot_histogram":
-                driver_lines.append("    _last = plot_histogram(_last, kwargs['column'], kwargs['outpath'])")
-            elif step == "plot_series":
-                driver_lines.append("    _last = plot_series(kwargs['data'], kwargs['outpath'])")
-            elif step == "train_logreg":
-                driver_lines.append("    _last = train_logreg(kwargs['X'], kwargs['y'])")
-            elif step == "train_linreg":
-                driver_lines.append("    _last = train_linreg(kwargs['X'], kwargs['y'])")
-            elif step == "gpu_matrix_mul":
-                driver_lines.append("    _last = gpu_matrix_mul(kwargs['A'], kwargs['B'])")
-            else:
-                driver_lines.append(f"    _last = {step}(**kwargs)")
-        driver_lines.append("    return _last")
-        code_parts.append("\n".join(driver_lines))
-        return "\n".join(code_parts)
-
-    return legacy_generate_candidate(task)
 
 # -------------------------------
 # Curriculum memory
@@ -433,4 +399,46 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Trainer loop error: {e}", file=sys.stderr)
         time.sleep(5)
+
+
+def generate_candidate(task):
+    pipeline = task.get("pipeline")
+    func_name = task.get("function", "run_pipeline")
+
+    if pipeline:
+        code_parts = []
+        for step in pipeline:
+            if step in BUILDING_BLOCKS:
+                code_parts.append(BUILDING_BLOCKS[step])
+
+        driver_lines = [f"def {func_name}(**kwargs):", "    _last = None"]
+        for step in pipeline:
+            if step == "load_csv":
+                driver_lines.append("    _last = load_csv(kwargs['path'])")
+            elif step == "normalize":
+                driver_lines.append("    _last = normalize(_last, kwargs['column'])")
+            elif step == "filter_rows":
+                driver_lines.append("    _last = filter_rows(_last, kwargs['column'], kwargs['threshold'])")
+            elif step == "aggregate_mean":
+                driver_lines.append("    _last = aggregate_mean(_last, kwargs['column'])")
+            elif step == "plot_histogram":
+                driver_lines.append("    _last = plot_histogram(_last, kwargs['column'], kwargs['outpath'])")
+            elif step == "plot_series":
+                driver_lines.append("    _last = plot_series(kwargs['data'], kwargs['outpath'])")
+            elif step == "train_logreg":
+                driver_lines.append("    _last = train_logreg(kwargs['X'], kwargs['y'])")
+            elif step == "train_linreg":
+                driver_lines.append("    _last = train_linreg(kwargs['X'], kwargs['y'])")
+            elif step == "gpu_matrix_mul":
+                driver_lines.append("    _last = gpu_matrix_mul(kwargs['A'], kwargs['B'])")
+            else:
+                driver_lines.append(f"    _last = {step}(**kwargs)")
+        driver_lines.append("    return _last")
+        code_parts.append("\n".join(driver_lines))
+        return "\n".join(code_parts)
+
+    legacy_code = legacy_generate_candidate(task)
+    if f"def {func_name}" not in legacy_code:
+        legacy_code += f"\n{func_name} = " + legacy_code.split("def ")[1].split("(")[0]
+    return legacy_code
 

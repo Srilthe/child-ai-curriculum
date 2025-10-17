@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_088",
-  "description": "Compute the 44th Fibonacci number",
-  "function": "fib",
-  "inputs": { "n": 44 },
-  "expected_outputs": 701408733
-}

@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_065",
-  "description": "Sort a list using bubble_sort",
-  "function": "bubble_sort",
-  "inputs": { "lst": [1,6,4,2,5,3] },
-  "expected_outputs": [1,2,3,4,5,6]
-}

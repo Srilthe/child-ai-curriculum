@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_104",
-  "description": "Compute the 60th Fibonacci number",
-  "function": "fib",
-  "inputs": { "n": 60 },
-  "expected_outputs": 1548008755920
-}

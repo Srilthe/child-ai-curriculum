@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_072",
-  "description": "Compute the 28th Fibonacci number",
-  "function": "fib",
-  "inputs": { "n": 28 },
-  "expected_outputs": 317811
-}

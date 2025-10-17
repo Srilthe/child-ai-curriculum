@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_092",
-  "description": "Compute the 48th Fibonacci number",
-  "function": "fib",
-  "inputs": { "n": 48 },
-  "expected_outputs": 4807526976
-}

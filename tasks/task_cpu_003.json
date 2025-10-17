@@ -1,7 +1,0 @@
-{
-  "id": "task_cpu_003",
-  "description": "Compute the 10th Fibonacci number",
-  "function": "fib",
-  "inputs": { "n": 10 },
-  "expected_outputs": 55
-}

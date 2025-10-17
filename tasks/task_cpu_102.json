@@ -1,7 +1,7 @@
 {
   "id": "task_cpu_102",
-  "description": "Compute the mean of a list of numbers",
-  "function": "mean",
-  "inputs": { "lst": [48,49,50,51,52] },
-  "expected_outputs": 50
+  "description": "Check if a number is prime",
+  "function": "is_prime",
+  "inputs": { "n": 17 },
+  "expected_outputs": true
 }
