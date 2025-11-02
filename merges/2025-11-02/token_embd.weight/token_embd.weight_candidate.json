@@ -1,0 +1,7 @@
+{
+  "tag": "token_embd.weight",
+  "scale": 0.5,
+  "base": "token_embd.weight_base.npy",
+  "lora": "token_embd.weight_adapter.npy",
+  "score": 0.769039
+}

@@ -1,0 +1,2 @@
+Merge tensor 'attention_out' with a random scale factor.
+Ensure reproducibility and log diagnostics.

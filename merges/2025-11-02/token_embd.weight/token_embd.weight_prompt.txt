@@ -1,0 +1,2 @@
+Merge tensor 'token_embd.weight' with a random scale factor.
+Ensure reproducibility and log diagnostics.

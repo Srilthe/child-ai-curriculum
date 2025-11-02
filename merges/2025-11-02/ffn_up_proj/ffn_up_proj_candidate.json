@@ -1,0 +1,7 @@
+{
+  "tag": "ffn_up_proj",
+  "scale": 0.6,
+  "base": "ffn_up_proj_base.npy",
+  "lora": "ffn_up_proj_adapter.npy",
+  "score": 0.769039
+}

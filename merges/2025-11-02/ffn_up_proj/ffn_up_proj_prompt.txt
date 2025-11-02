@@ -1,0 +1,2 @@
+Merge tensor 'ffn_up_proj' with a random scale factor.
+Ensure reproducibility and log diagnostics.

@@ -1,0 +1,7 @@
+{
+  "tag": "attention_out",
+  "scale": 0.7,
+  "base": "attention_out_base.npy",
+  "lora": "attention_out_adapter.npy",
+  "score": 0.769039
+}
